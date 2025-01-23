@@ -1,0 +1,5 @@
+Flask==3.1.0
+jsonschema==4.23.0
+potatodb==1.0.3
+pytest-cov==6.0.0
+pytest-mock==3.14.0

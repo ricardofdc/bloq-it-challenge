@@ -1,0 +1,729 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: Server for Software Engineering Challenge, by Bloqit
+    url: https://localhost:5000
+info:
+  description: API for Software Engineering Challenge, by Bloqit
+  version: "0.0.1"
+  title: Software Engineering Challenge
+  contact:
+    email: ricardofdc@live.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+paths:
+  /bloq:
+    get:
+      summary: Retreive all / some bloqs
+      tags:
+        - bloq
+      parameters:
+        - in: query
+          required: false
+          name: id
+          schema:
+            type: string
+            format: uuid
+            example: "c3ee858c-f3d8-45a3-803d-e080649bbb6f"
+          description: Bloq UUID to look for.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bloq'
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bloq'
+                example: []
+
+    post:
+      summary: Create a new bloq
+      tags:
+        - bloq
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBloqRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bloq'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "You cannot choose an 'id'."
+
+    put:
+      summary: Update a bloq's information
+      tags:
+        - bloq
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bloq'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bloq'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "'address' is a required property"
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Bloq with 'id': '<example_id>' not found."
+
+    delete:
+      summary: Remove a bloq given its UUID
+      tags:
+        - bloq
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "c3ee858c-f3d8-45a3-803d-e080649bbb6f"
+          description: Bloq UUID to remove.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Bloqs, Lockers, and Rents related to 'id': '<example_id>' deleted."
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Parameter 'id' is missing."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Bloq with 'id': '<example_id>' not found."
+
+  /locker:
+    get:
+      summary: Retrieve all / some lockers
+      description: You cannot set both 'id' and 'bloqId' together.
+        Choose only one of them, or none.
+      tags:
+        - locker
+      parameters:
+        - in: query
+          required: false
+          name: id
+          schema:
+            type: string
+            format: uuid
+            example: "8b4b59ae-8de5-4322-a426-79c29315a9f1"
+          description: Locker UUID to look for.
+        - in: query
+          required: false
+          name: bloqId
+          schema:
+            type: string
+            format: uuid
+            example: "c3ee858c-f3d8-45a3-803d-e080649bbb6f"
+          description: Bloq UUID to look for.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Locker'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "You cannot set 'id' and 'bloqId' parameters together."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Locker'
+                example: []
+
+    post:
+      summary: Create a new locker
+      tags:
+        - locker
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLockerRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Locker'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "You cannot choose an 'id'."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "No bloq with 'id': '<example_id>' found."
+
+    delete:
+      summary: Remove a locker given its UUID
+      tags:
+        - locker
+      parameters:
+        - in: query
+          required: true
+          name: id
+          schema:
+            type: string
+            format: uuid
+            example: "c3ee858c-f3d8-45a3-803d-e080649bbb6f"
+          description: Bloq UUID to remove.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Lockers, and Rents related to 'id': '<example_id>' deleted."
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Parameter 'id' is missing."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Locker with 'id': '<example_id>' not found."
+
+  /locker/{locker_id}/open:
+    put:
+      summary: Open a locker
+      tags:
+        - locker
+      parameters:
+        - in: path
+          required: true
+          name: locker_id
+          schema:
+            type: string
+            format: uuid
+            example: "c3ee858c-f3d8-45a3-803d-e080649bbb6f"
+          description: Bloq UUID to open.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Locker'
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Locker with 'id': '<example_id>' not found."
+        '409':
+          description: Locker is already OPEN
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Locker with 'id': '<example_id>' already OPEN."
+
+  /locker/{locker_id}/close:
+    put:
+      summary: Close a locker
+      tags:
+        - locker
+      parameters:
+        - in: path
+          required: true
+          name: locker_id
+          schema:
+            type: string
+            format: uuid
+            example: "c3ee858c-f3d8-45a3-803d-e080649bbb6f"
+          description: Bloq UUID to close.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Locker'
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Locker with 'id': '<example_id>' not found."
+        '409':
+          description: Locker is already CLOSED
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Locker with 'id': '<example_id>' already CLOSED."
+
+  /rent:
+    get:
+      summary: Retreive all / some rents
+      description: You cannot set both 'id' and 'lockerId' together.
+        Choose only one of them, or none.
+      tags:
+        - rent
+      parameters:
+        - in: query
+          required: false
+          name: id
+          schema:
+            type: string
+            format: uuid
+            example: "40efc6fd-f10c-4561-88bf-be916613377c"
+          description: Rent UUID to look for.
+        - in: query
+          required: false
+          name: lockerId
+          schema:
+            type: string
+            format: uuid
+            example: "1b8d1e89-2514-4d91-b813-044bf0ce8d20"
+          description: Locker UUID to look for.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rent'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "You cannot set 'id' and 'lockerId' parameters together."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rent'
+                example: []
+
+    post:
+      summary: Create a new rent
+      tags:
+        - rent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRentRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rent'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "You cannot choose an 'id'."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "No rent with 'id': '<example_id>' found."
+
+    delete:
+      summary: Remove a locker given its UUID
+      tags:
+        - rent
+      parameters:
+        - in: query
+          required: true
+          name: id
+          schema:
+            type: string
+            format: uuid
+            example: "84ba232e-ce23-4d8f-ae26-68616600df48"
+          description: Bloq UUID to remove.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent with 'id': '<example_id>' deleted."
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Parameter 'id' is missing."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent with 'id': '<example_id>' not found."
+
+  /rent/{rent_id}/send:
+    put:
+      summary: Send a rent to a locker
+      tags:
+        - rent
+      parameters:
+        - in: path
+          required: true
+          name: rent_id
+          schema:
+            type: string
+            format: uuid
+            example: "8b4b59ae-8de5-4322-a426-79c29315a9f1"
+          description: UUID of rent to send.
+        - in: query
+          required: true
+          name: toLockerId
+          schema:
+            type: string
+            format: uuid
+            example: "6b33b2d1-af38-4b60-a3c5-53a69f70a351"
+          description: UUID of locker to drop off rent on.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent sent."
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Parameter 'toLockerId' is missing."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent with 'id': '<example_id>' not found."
+        '409':
+          description: Cannot send this rent
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent status is not 'CREATED'. Cannot send it."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent already has a lockerId assigned. Cannot send it."
+
+  /rent/{rent_id}/dropoff:
+    put:
+      summary: Drop off a rent in a locker
+      tags:
+        - rent
+      parameters:
+        - in: path
+          required: true
+          name: rent_id
+          schema:
+            type: string
+            format: uuid
+            example: "8b4b59ae-8de5-4322-a426-79c29315a9f1"
+          description: UUID of rent to send.
+        - in: query
+          required: true
+          name: toLockerId
+          schema:
+            type: string
+            format: uuid
+            example: "6b33b2d1-af38-4b60-a3c5-53a69f70a351"
+          description: UUID of locker to drop off rent on.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent dropped off."
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Parameter 'toLockerId' is missing."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent with 'id': '<example_id>' not found."
+        '409':
+          description: Cannot send this rent
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent status is not 'WAITING_DROPOFF'. Cannot send it."
+
+  /rent/{rent_id}/pickup:
+    put:
+      summary: Pick up a rent from a locker
+      tags:
+        - rent
+      parameters:
+        - in: path
+          required: true
+          name: rent_id
+          schema:
+            type: string
+            format: uuid
+            example: "8b4b59ae-8de5-4322-a426-79c29315a9f1"
+          description: UUID of rent to send.
+        - in: query
+          required: true
+          name: fromLockerId
+          schema:
+            type: string
+            format: uuid
+            example: "6b33b2d1-af38-4b60-a3c5-53a69f70a351"
+          description: UUID of locker to pick up rent from.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent picked up."
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Parameter 'fromLockerId' is missing."
+        '404':
+          description: UUID not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent with 'id': '<example_id>' not found."
+        '409':
+          description: Cannot send this rent
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Rent status is not 'WAITING_PICKUP'. Cannot pick it up."
+
+components:
+  schemas:
+    Bloq:
+      type: object
+      required:
+        - id
+        - title
+        - address
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "c3ee858c-f3d8-45a3-803d-e080649bbb6f"
+        title:
+          type: string
+          example: "Luitton Vouis Champs Elysées"
+        address:
+          type: string
+          example: "101 Av. des Champs-Élysées, 75008 Paris, France"
+
+    CreateBloqRequest:
+      type: object
+      required:
+        - title
+        - address
+      properties:
+        title:
+          type: string
+          example: "Luitton Vouis Champs Elysées"
+        address:
+          type: string
+          example: "101 Av. des Champs-Élysées, 75008 Paris, France"
+
+    Locker:
+      type: object
+      required:
+        - id
+        - bloqId
+        - status
+        - isOccupied
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "8b4b59ae-8de5-4322-a426-79c29315a9f1"
+        bloqId:
+          type: string
+          format: uuid
+          example: "c3ee858c-f3d8-45a3-803d-e080649bbb6f"
+        status:
+          type: string
+          enum: ["OPEN", "CLOSED"]
+          example: "OPEN"
+        isOccupied:
+          type: boolean
+          example: true
+
+    CreateLockerRequest:
+      type: object
+      required:
+        - bloqId
+        - status
+        - isOccupied
+      properties:
+        bloqId:
+          type: string
+          format: uuid
+          example: "c3ee858c-f3d8-45a3-803d-e080649bbb6f"
+        status:
+          type: string
+          enum: ["OPEN", "CLOSED"]
+          example: "OPEN"
+        isOccupied:
+          type: boolean
+          example: true
+
+    Rent:
+      type: object
+      required:
+        - id
+        - lockerId
+        - weight
+        - size
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "40efc6fd-f10c-4561-88bf-be916613377c"
+        lockerId:
+          type: string
+          format: uuid
+          example: "1b8d1e89-2514-4d91-b813-044bf0ce8d20"
+        weight:
+          type: number
+          minimum: 0
+          example: 10
+        size:
+          type: string
+          enum: ["XS", "S", "M", "L", "XL"]
+          example: "M"
+        status:
+          type: string
+          enum: ["CREATED", "WAITING_PICKUP", "WAITING_DROPOFF", "DELIVERED"]
+          example: "WAITING_PICKUP"
+
+    CreateRentRequest:
+      type: object
+      required:
+        - weight
+        - size
+      properties:
+        weight:
+          type: number
+          minimum: 0
+          example: 10
+        size:
+          type: string
+          enum: ["XS", "S", "M", "L", "XL"]
+          example: "M"
